@@ -1,0 +1,26 @@
+[
+    {
+        "id": "preferences", 
+        "children": [
+            {
+                "caption": "Regex Sequencer", 
+                "children": [
+                    {
+                        "caption": "Context Menu – Default", 
+                        "args": {
+                            "file": "${packages}/RegexSequencer/Context.sublime-menu"
+                        }, 
+                        "command": "open_file"
+                    }, 
+                    {
+                        "caption": "Context Menu – User", 
+                        "args": {
+                            "file": "${packages}/User/RegexSequencer/Context.sublime-menu"
+                        }, 
+                        "command": "open_file"
+                    }
+                ]
+            }
+        ]
+    }
+]
