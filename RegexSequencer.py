@@ -143,6 +143,30 @@ class RegexSequencerCommand(BasePluginCommand):
 				for token in sorted(list(self.tokens.keys())):
 					self.output += "//    \"{}\" = \"{}\" (regex: \"{}\" )\n".format(token,self.tokens[token],self.patternsOfTokens[token])
 
+	def load_replace_desriptors(self,find,replace,outputData,flags=0):
+		key = replace
+		
+		# if find pattern is a key for known global pattern
+		find = self.find_pattern_for_key(find)
+
+		# if replace is a key for known global template
+		replace = self.replace_template_for_key(replace)
+
+		# get final replace template by replacing tokens with its values
+		replace = string.Template(replace).safe_substitute(self.tokens)
+
+		# find regions to replace and apply the template
+		# source: https://forum.sublimetext.com/t/view-replace-regex/8566/3
+		replacements = list()
+		regions = self.view.find_all(find, flags, replace, replacements)
+
+		# update output data
+		outputData[key] = {
+			"template": replace,
+			"regions": regions,
+			"replacements" : replacements
+		}
+
 	#================================ GETTERS ==================================
 
 	def sequence_for_key(self,key):
@@ -327,26 +351,3 @@ class RegexSequencerCommand(BasePluginCommand):
 			allContentRegion = sublime.Region(0, self.view.size())
 			self.view.replace(edit, allContentRegion, result)
 			
-	def load_replace_desriptors(self,find,replace,outputData,flags=0):
-		key = replace
-		
-		# if find pattern is a key for known global pattern
-		find = self.find_pattern_for_key(find)
-
-		# if replace is a key for known global template
-		replace = self.replace_template_for_key(replace)
-
-		# get final replace template by replacing tokens with its values
-		replace = string.Template(replace).safe_substitute(self.tokens)
-
-		# find regions to replace and apply the template
-		# source: https://forum.sublimetext.com/t/view-replace-regex/8566/3
-		replacements = list()
-		regions = self.view.find_all(find, flags, replace, replacements)
-
-		# update output data
-		outputData[key] = {
-			"template": replace,
-			"regions": regions,
-			"replacements" : replacements
-		}
