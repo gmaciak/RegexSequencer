@@ -12,8 +12,8 @@
 				// 2. if file is empty copy content of this file to it
 				// 3. define your own sequence with 'id' : 'sample_sequence'
 				// 4. set your own 'caption' and 'args'
-				"id" : "sample_sequence",
-				"caption" : "Sample Sequence",
+				"id" : "regex_sequencer_sequence_1",
+				"caption" : "Demo Sequence",
 				"command" : "regex_sequencer",
 				"args" : {
 					// Sample Sequence generates some other parts of class definition
@@ -32,25 +32,25 @@
 
 						@end
 					*/
-					// CLICK ON THE FILE AND FIRE "Sample Sequence" COMMAND FROM CONTEXT MENU TO FIND OUT
+					// CLICK ON THE FILE AND FIRE "Demo Sequence" COMMAND FROM
+					// CONTEXT MENU TO FIND OUT AND LOOK AT THE END OF THE FILE
 
-					// MASTER REGEX SEQUENCE must be named "REGEX_SEQUENCE"
-					// 'REGEX_SEQUENCE' may be a list of explisit steps (dict) or/and subsequences names.
-					// Subsequences should be listed below in the same dict
-					"REGEX_SEQUENCE" : [
+					// MASTER SEQUENCE must be named "SEQUENCE"
+					// 'SEQUENCE' may be a list of explisit steps (dict) or/and subsequences names.
+					// Subsequences should be listed below in the same dict.
+					// Smaller elements like Substeps, commands, patterns
+					// should be listed in apropriate dictionary.
+					"SEQUENCE" : [
 						{
-							// regex
-							
-
 							// Step with FIND_ALL will find all elements matching
 							// to pattern and replace all content with the result
 							// FIND_ALL has greater priority than find
-							// Every pattern may be defined directly after FIND, FIND_ALL or in
+							// Every pattern may be defined directly as a value for FIND or FIND_ALL key or in
 							// REGULAR_EXPRESSIONS node and then used by name multiple times
-							"FIND_ALL" : "property",
+							// "FIND_ALL" : "property",
 
-							// If there is no REPLACE key in the step, FIND works the same as FIND_ALL
-							// "FIND" : "@property(?:\\(.+?\\))?\\s*?\\w+\\s*\\*\\s*\\w+;",
+							// If there is no REPLACE and no FIND_ALL key in the step, FIND works the same as FIND_ALL
+							"FIND" : "@property(?:\\(.+?\\))?\\s*?\\w+\\s*\\*\\s*\\w+;",
 
 							// unique matches, available grobaly for every step from the step
 							// when the tokens were defined.
@@ -63,7 +63,7 @@
 								"class" : "@interface (\\w+)\\s*:"
 							},
 
-							// If no "REPLACE" node will cause replacing all content by FIND or FIND_ALL result
+							// If no "REPLACE" step will cause replacing all content by FIND or FIND_ALL result
 							// "REPLACE" : [
 							// 	"const export",
 							// 	"const",
@@ -71,19 +71,36 @@
 							// ]
 						},
 
-						// Every next step is performed on the result of previous step
-						// Steps may by defined directly or globaly
-						// in the main node and then used by name multiple times
+						// Every next step is performed on the result of previous step.
+
+						// Steps might be defined directly (as above) or globaly
+						// as a named sequences in the root node or named steps
+						// in STEPS node and then used by name multiple times.
+						// Named step may be an other sequence (group of steps,
+						// an array of dictionaries), a signel step (a dictionary)
+						// wich may be a find/replace operation or a command
 						"Generate output"
 					],
 
-					// Enable printing the result of each step with comments instead of
-					// the result of whole sequence
-					"DEBUG" : true, // default value is false
+					// Enable printing the listed results for each step with comments instead of
+					// the result of whole sequence.
+					"DEBUG" : true, // default value is false.
 
-					// ATOMIC STEPS SEQUENCES (reusable in other sequences):
+					// NAME SEARCH PRECEDENCE:
+					// - root node (search for sequence name)
+					// - STEPS (search for step name)
+					// - COMMANDS
+
+					// ATOMIC SEQUENCES reusable in other sequences.
+					// Global sequences might be reused and embeded in other sequences.
 					"Generate output" : [
-						{
+						"properties converstion"
+					],
+
+					// Sigle STEPS reusable in other sequences.
+					// Step may be a regex step, command or fusion of the two
+					"STEPS" : {
+						"properties converstion" : {
 							// regex
 							"FIND" : "property",
 							"REPLACE" : [
@@ -92,7 +109,7 @@
 								"synthesize"
 							]
 						}
-					],
+					},
 
 					"REGULAR_EXPRESSIONS" : {
 						"property" : "@property(?:\\(.+?\\))?\\s*?(\\w+\\s*\\*)\\s*(\\w?)(\\w*);"
@@ -100,9 +117,142 @@
 
 					// GLOBAL replace templates
 					"REPLACE_TEMPLATES" : {
-						"const export" : "FOUNDATION_EXPORT NSString* const kPropertyName\\U$2\\E$3;",
-						"const" : "NSString* const k${class}\\U$2\\E$3 = @\"${class}\\U$2\\E$3\";",
-						"synthesize" : "@synthesize \\U$2\\E$3;"
+						"const export" : "FOUNDATION_EXPORT NSString* const k${class}PropertyName\\U$2\\E$3;",
+						"const" : "NSString* const k${class}PropertyName\\U$2\\E$3 = @\"$2$3\";",
+						"synthesize" : "@synthesize $2$3;"
+					}
+				}
+			},
+			{
+				"id" : "regex_sequencer_sequence_2",
+				"caption" : "Demo Sequence (simpler)",
+				"command" : "regex_sequencer",
+				"args" : {
+					// Uncomment to see all steps
+					"DEBUG" : true,
+
+					"SEQUENCE" : [
+						{
+							// Find all properties declarations and replace file content with the result
+							"FIND_ALL" : "@property(?:\\(.+?\\))?\\s*?\\w+\\s*\\*\\s*\\w+;",
+
+							// Then in finded properties FIND each property again but now with groups
+							"FIND" : "@proPERty(?:\\(.+?\\))?\\s*?(\\w+\\s*\\*)\\s*(\\w?)(\\w*);",
+
+							// Find class name and save it as a token for use in replace templates
+							"TOKENS" : {
+								"class" : "@inTerface (\\w+)\\s*:"
+							},
+
+							// Set to 'true' if you want use literal search.
+							// Default is 'false' (regex search).
+							// Affects whole step.
+							// To applay different setting for some parts
+							// of the step, split the step on two or more steps
+							"LITERAL" : false,
+
+							// Set to 'true' if you want case insensitive search.
+							// Default is 'false' (case sensitive search).
+							// Affects whole step.
+							// To applay different setting for some parts
+							// of the step, split the step on two or more steps
+							"IGNORECASE" : true,
+
+							// Perform 3 different REPLACE templates. Every template use FIND result as an input
+							"REPLACE" : [
+								"$0",
+								"FOUNDATION_EXPORT NSString* const k${class}PropertyName\\U$2\\E$3;",
+								"NSString* const k${class}PropertyName\\U$2\\E$3 = @\"$2$3\";",
+								"@synthesize $2$3;"
+							],
+							// "REPLACE" : "FOUNDATION_EXPORT NSString* const k${class}PropertyName\\U$2\\E$3;"
+						}
+					]
+				}
+			},
+			{
+				"id" : "regex_sequencer_sequence_3",
+				"caption" : "Optimize JSON size",
+				"command" : "regex_sequencer",
+				"args" : {
+					"SEQUENCE" : [
+						"Basic optimization"
+						// ,"More optimization"
+					],
+
+					"Basic optimization" : [
+						"Replace spaces with tabs",
+						"Remove redundant white spaces at the end of the line"
+					],
+
+					// single atomic operation sequence
+					"Replace spaces with tabs" : [
+						"Disable 'View/Indentation/Indent using spaces'"
+
+						// normalize tab size
+						// ,"Set tab size to 4 spaces", // may be omitted, left for demonstration purposes
+
+						// replace every 4 spaces of indentation with 1 tab
+						,"Convert Indentation to Tabs"
+					],
+
+					"More optimization" : [
+						{
+							// replace : '"[key]" :'
+							"FIND" : "\"\\s+: ",
+
+							// with : '"[key]":'
+							"REPLACE" : "\": ",
+						}
+						,{
+							// replace : },
+							//           {
+							// (occures in arrays of dictionaries)
+							"FIND" : "(\n\\s*?\\}\\s*,)\\s*(\\{\\s*?\n)",
+
+							// with : },{
+							"REPLACE" : "$1$2",
+						}
+					],
+
+					// GLOBAL regex oparations and commands
+					"STEPS" : {
+						"Remove redundant white spaces at the end of the line" : {
+							"FIND" : "[\t\f ]*$",
+							"REPLACE" : "",
+						},
+
+						// COMMANDS:
+						// you can define command in global STEPS node
+						// to reuse it multiple times as a single step and/or to
+						// use descriptive key to better express what the command do
+						// 
+						// If you need to use some command from menu but do not know its name:
+						// 1. Open console, if it is not already opend. To do so
+						//	  select 'View/Show Concole' from menu bar (shortkut: Ctrl+`)
+						// 2. type: sublime.log_commands(True)
+						// 3. fire your command from menu to see its name and args in console
+						// 4. type: sublime.log_commands(False) to disable commands logging
+
+						"Convert Indentation to Tabs" : {
+							"COMMAND" : "unexpand_tabs",
+							"ARGS" : {"set_translate_tabs": true}
+						}
+
+						// ,"Convert Indentation to Spaces" : {
+						// 	"COMMAND" : "expand_tabs",
+						// 	"ARGS" : {"set_translate_tabs": true}
+						// }
+
+						,"Set tab size to 4 spaces" : {
+							"COMMAND" : "set_setting",
+							"ARGS" : {"setting": "tab_size", "value": 4}
+						}
+
+						,"Disable 'View/Indentation/Indent using spaces'" : {
+							"COMMAND" : "set_setting",
+							"ARGS" : {"setting": "translate_tabs_to_spaces", "value": false}
+						}
 					}
 				}
 			}

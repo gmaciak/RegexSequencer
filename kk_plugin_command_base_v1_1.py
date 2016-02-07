@@ -34,11 +34,16 @@ class BasePluginCommand(sublime_plugin.TextCommand):
 class CaseInsensitiveDict(dict):
 	@staticmethod
 	def vlaue_for_case_insensitive_key(dictionary, key):
-		if key.lower() in dictionary:
-			return dictionary[key.lower()]
-		elif key.upper() in dictionary:
-			return dictionary[key.upper()]
+		if key in dictionary:
+			return dictionary[key]
+		elif type(key) is str:
+			if key.lower() in dictionary:
+				return dictionary[key.lower()]
+			elif key.upper() in dictionary:
+				return dictionary[key.upper()]
 		return None
 
 	def __missing__(self, key):
 		return CaseInsensitiveDict.vlaue_for_case_insensitive_key(self,key)
+
+	__init__(safe=True)

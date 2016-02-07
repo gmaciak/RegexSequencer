@@ -3,7 +3,8 @@
         "id": "preferences", 
         "children": [
             {
-                "caption": "Regex Sequencer", 
+                "caption": "Regex Sequencer",
+                "id": "regex_sequencer",
                 "children": [
                     {
                         "caption": "Context Menu – Default", 
@@ -13,7 +14,7 @@
                         "command": "open_file"
                     }, 
                     {
-                        "caption": "Context Menu – User", 
+                        "caption": "Edit Context Menu – User", 
                         "args": {
                             "file": "${packages}/User/RegexSequencer/Context.sublime-menu"
                         }, 
