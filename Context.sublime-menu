@@ -89,7 +89,6 @@
 					// NAME SEARCH PRECEDENCE:
 					// - root node (search for sequence name)
 					// - STEPS (search for step name)
-					// - COMMANDS
 
 					// ATOMIC SEQUENCES reusable in other sequences.
 					// Global sequences might be reused and embeded in other sequences.
@@ -129,7 +128,7 @@
 				"command" : "regex_sequencer",
 				"args" : {
 					// Uncomment to see all steps
-					"DEBUG" : true,
+					// "DEBUG" : true,
 
 					"SEQUENCE" : [
 						{
