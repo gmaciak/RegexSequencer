@@ -1,5 +1,14 @@
 # RegexSequencer
-Sublime plugin with command to prcess text by performing a sequens of regex find/replace operations and commands on it.
+Sublime Text plugin providing command to prcess text by performing a sequens of regex find/replace operations and commands on it.
+Defined sequeces are available from context menu.
+
+For exaples of use check [Context.sublime-menu](https://github.com/kolekcjonerKapsli/RegexSequencer/blob/master/Context.sublime-menu) file, there are three demo sequences defined as args of the command.
+Same way you can add your own sequences which will be available from context menu.
+
+To add your own context menu command (sequence) open menu 'Sublime Text/Preferences/Regex Sequencer/Edit Context Menu - User'
+In the file you can define your own context menu commands or override already defined by copying it from 'Sublime Text/Preferences/Regex Sequencer/Context Menu - Default' and modifying.
+
+I will show you how later.
 
 ## License
 
