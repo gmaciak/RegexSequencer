@@ -8,7 +8,7 @@ class TokensMap(CaseInsensitiveDict):
 	def __missing__(self, key):
 		return "${{{}}}".format(key)
 
-class RegexSequencerCommand(BasePluginCommand):
+class RegexSequencerCommand(KKBasePluginCommand):
 	
 	def run(self, edit, **kvargs):
 		allContentRegion = sublime.Region(0, self.view.size())

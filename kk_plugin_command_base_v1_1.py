@@ -1,6 +1,6 @@
 import sublime, sublime_plugin, sys
 
-class BasePluginCommand(sublime_plugin.TextCommand):
+class KKBasePluginCommand(sublime_plugin.TextCommand):
 	""" Case converstion command base class """
 	def change_syntax(self, view = None, lang = None):
 		""" Changes syntax to JSON if it is plain text """
@@ -45,5 +45,3 @@ class CaseInsensitiveDict(dict):
 
 	def __missing__(self, key):
 		return CaseInsensitiveDict.vlaue_for_case_insensitive_key(self,key)
-
-	__init__(safe=True)
