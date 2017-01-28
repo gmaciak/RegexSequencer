@@ -6,7 +6,7 @@
 		[
 			{
 				// !!!: Requires SublimeText Indent plugin by Alexey Nesterov
-				// indents XML contined in the single line, usefull to make logs with xml much readable
+				// indents XML one liners, usefull to make logs with xml much readable
 				"id" : "regex_sequencer_indent_xmls",
 				"caption" : "Indent XML Strings",
 				"command" : "regex_sequencer",
@@ -15,8 +15,8 @@
 					"SEQUENCE" : [
 						{
 							// Find all xml linex and selects them
-							"FIND_ALL" : "<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?><.*>",
-							// "GET_ALL" : "<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?><.*>",
+							"FIND_ALL" : "<(?<tag>[^\\s]*).*>.*?>+.*?\\s*\\k<tag>\\s*>",
+							// "GET_ALL" : "<.*>",
 
 							// perform command on selected regions
 							"COMMAND" : "indent_xml",

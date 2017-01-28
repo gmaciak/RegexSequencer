@@ -205,6 +205,7 @@ class RegexSequencerCommand(KKBasePluginCommand):
 		# regex_step/command
 		elif type(sequence) is dict:
 			step = CaseInsensitiveDict(sequence)
+			self.view.sel().clear()
 			self.run_step(edit,step)
 		else:
 			print("ERROR: run_sequence(self, edit, sequence): Sequence node has invalid type: {}",sequence)
@@ -264,9 +265,11 @@ class RegexSequencerCommand(KKBasePluginCommand):
 			self.handle_select_all(edit, find, flags)
 
 		if command != None:
-			self.run_command(command, step["ARGS"])
-
-		self.view.sel().clear()
+			try:
+				self.run_command(command, step["ARGS"])
+			except:
+				self.show_exception()
+			
 
 	def run_command(self,command,args):
 		if type(command) is str:
