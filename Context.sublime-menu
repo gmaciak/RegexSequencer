@@ -5,6 +5,40 @@
 		"children":
 		[
 			{
+				// !!!: Requires SublimeText Indent plugin by Alexey Nesterov
+				// indents XML contined in the single line, usefull to make logs with xml much readable
+				"id" : "regex_sequencer_indent_xmls",
+				"caption" : "Indent XML Strings",
+				"command" : "regex_sequencer",
+				"args" : {
+					// "DEBUG" : true, // default value is false.
+					"SEQUENCE" : [
+						{
+							// Find all xml linex and selects them
+							"FIND_ALL" : "<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?><.*>",
+							// "GET_ALL" : "<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?><.*>",
+
+							// perform command on selected regions
+							"COMMAND" : "indent_xml",
+
+							// Set to 'true' if you want use literal search.
+							// Default is 'false' (regex search).
+							// Affects whole step.
+							// To applay different setting for some parts
+							// of the step, split the step on two or more steps
+							"LITERAL" : false,
+
+							// Set to 'true' if you want case insensitive search.
+							// Default is 'false' (case sensitive search).
+							// Affects whole step.
+							// To applay different setting for some parts
+							// of the step, split the step on two or more steps
+							"IGNORECASE" : true,
+						}
+					]
+				}
+			},
+			{
 				// You can override 'sample_sequence' by defining your own sequence
 				// for id 'sample_sequence'.
 				// To do so, you need to:
@@ -42,15 +76,15 @@
 					// should be listed in apropriate dictionary.
 					"SEQUENCE" : [
 						{
-							// Step with FIND_ALL will find all elements matching
+							// Step with GET_ALL will find all elements matching
 							// to pattern and replace all content with the result
-							// FIND_ALL has greater priority than find
-							// Every pattern may be defined directly as a value for FIND or FIND_ALL key or in
+							// GET_ALL has greater priority than find
+							// Every pattern may be defined directly as a value for FIND or GET_ALL key or in
 							// REGULAR_EXPRESSIONS node and then used by name multiple times
-							// "FIND_ALL" : "property",
+							// "GET_ALL" : "property", // check "REGULAR_EXPRESSIONS" node below
 
-							// If there is no REPLACE and no FIND_ALL key in the step, FIND works the same as FIND_ALL
-							"FIND" : "@property(?:\\(.+?\\))?\\s*?\\w+\\s*\\*\\s*\\w+;",
+							// If there is no REPLACE and no GET_ALL key in the step, FIND works the same as FIND_ALL and is useless
+							"GET_ALL" : "@property(?:\\(.+?\\))?\\s*?\\w+\\s*\\*\\s*\\w+;",
 
 							// unique matches, available grobaly for every step from the step
 							// when the tokens were defined.
@@ -63,7 +97,7 @@
 								"class" : "@interface (\\w+)\\s*:"
 							},
 
-							// If no "REPLACE" step will cause replacing all content by FIND or FIND_ALL result
+							// If no "REPLACE" step will cause replacing all content by FIND result
 							// "REPLACE" : [
 							// 	"const export",
 							// 	"const",
@@ -84,7 +118,7 @@
 
 					// Enable printing the listed results for each step with comments instead of
 					// the result of whole sequence.
-					"DEBUG" : true, // default value is false.
+					// "DEBUG" : true, // default value is false.
 
 					// NAME SEARCH PRECEDENCE:
 					// - root node (search for sequence name)
@@ -133,7 +167,7 @@
 					"SEQUENCE" : [
 						{
 							// Find all properties declarations and replace file content with the result
-							"FIND_ALL" : "@property(?:\\(.+?\\))?\\s*?\\w+\\s*\\*\\s*\\w+;",
+							"GET_ALL" : "@property(?:\\(.+?\\))?\\s*?\\w+\\s*\\*\\s*\\w+;",
 
 							// Then in finded properties FIND each property again but now with groups
 							"FIND" : "@proPERty(?:\\(.+?\\))?\\s*?(\\w+\\s*\\*)\\s*(\\w?)(\\w*);",

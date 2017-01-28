@@ -9,6 +9,7 @@ class TokensMap(CaseInsensitiveDict):
 		return "${{{}}}".format(key)
 
 class RegexSequencerCommand(KKBasePluginCommand):
+	version = "2.0"
 	
 	def run(self, edit, **kvargs):
 		allContentRegion = sublime.Region(0, self.view.size())
@@ -87,6 +88,7 @@ class RegexSequencerCommand(KKBasePluginCommand):
 				source = self.view.substr(sublime.Region(0, self.view.size()))
 
 				# run master sequence
+				# print("masterSequence: ",masterSequence)
 				self.run_sequence(edit,masterSequence)
 
 				# if output string available replace all content with it
@@ -230,8 +232,11 @@ class RegexSequencerCommand(KKBasePluginCommand):
 		# load tokens from the step
 		self.updateTokens(step["TOKENS"],flags)
 
-		findAll = step["FIND_ALL"]
+		selectAll = step["FIND_ALL"]
+		getAll = step["GET_ALL"]
 		find = step["FIND"]
+		if find == None:
+			find = selectAll
 
 		# 'replace' may be a single PERL-like pattern or a list of patterns.
 		#	Nice overview about Named Capturing Groups:
@@ -239,27 +244,24 @@ class RegexSequencerCommand(KKBasePluginCommand):
 		# Sublime Text uses the Perl Compatible Regular Expressions (PCRE) engine
 		#	source: http://docs.sublimetext.info/en/latest/search_and_replace/search_and_replace_overview.html
 		replace = step["REPLACE"]
-
 		command = step["COMMAND"]
 
-		isUsingFindAll = replace == None
-		if find == None:
-			find = findAll
-			isUsingFindAll = True
-
-		if findAll != None:
+		if getAll != None:
 			if self.output != None:
-				self.output += "// FIND ALL: \"{0}\"\n".format(find)
-			self.handle_find_all(edit, findAll, flags)
-
-		if self.output != None:
-			findNodeName = "FIND (ALL)" if isUsingFindAll else "FIND"
+				self.output += "// GET ALL: \"{0}\"\n".format(getAll)
+			self.handle_get_all(edit, getAll, flags)
+		elif self.output != None:
+			findNodeName = "SELECT (ALL)" if replace == None else "FIND"
 			self.output += "// {}: \"{}\"\n".format(findNodeName,self.find_pattern_for_key(find))
 
 		if replace != None:
 			self.handle_replace(edit, find, replace, flags)
-		elif find != None and findAll == None:
-			self.handle_find_all(edit, find, flags)
+		# if no replace patterns but FIND_ALL pattern available, select all finded matches
+		elif selectAll != None:
+			self.handle_select_all(edit, selectAll, flags)
+		# if no replace find all matches and select them
+		elif find != None:
+			self.handle_select_all(edit, find, flags)
 
 		if command != None:
 			self.run_command(command, step["ARGS"])
@@ -275,8 +277,16 @@ class RegexSequencerCommand(KKBasePluginCommand):
 				self.view.run_command(command)
 
 	#=============================== HANDLERS ==================================
+	def handle_select_all(self,edit,find,flags=0):
+		# if find pattern is a key for known global pattern
+		find = self.find_pattern_for_key(find)
+		regions = self.view.find_all(find,flags)
+		if len(regions) > 0:
+			for region in regions:
+				if not region.empty():
+					self.view.sel().add(region)
 
-	def handle_find_all(self,edit,find,flags=0):
+	def handle_get_all(self,edit,find,flags=0):
 		# if find pattern is a key for known global pattern
 		find = self.find_pattern_for_key(find)
 

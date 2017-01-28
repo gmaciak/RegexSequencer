@@ -14,7 +14,7 @@
                         "command": "open_file"
                     }, 
                     {
-                        "caption": "Edit Context Menu – User", 
+                        "caption": "Context Menu – User", 
                         "args": {
                             "file": "${packages}/User/RegexSequencer/Context.sublime-menu"
                         }, 
