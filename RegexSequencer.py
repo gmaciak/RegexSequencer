@@ -266,6 +266,8 @@ class RegexSequencerCommand(KKBasePluginCommand):
 		if command != None:
 			self.run_command(command, step["ARGS"])
 
+		self.view.sel().clear()
+
 	def run_command(self,command,args):
 		if type(command) is str:
 			if self.output != None:

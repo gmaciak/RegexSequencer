@@ -83,7 +83,9 @@
 							// REGULAR_EXPRESSIONS node and then used by name multiple times
 							// "GET_ALL" : "property", // check "REGULAR_EXPRESSIONS" node below
 
-							// If there is no REPLACE and no GET_ALL key in the step, FIND works the same as FIND_ALL and is useless
+							// If there is no REPLACE and no GET_ALL key in the step,
+							// FIND works the same as FIND_ALL and is useless
+							// because it selects matches only for the step
 							"GET_ALL" : "@property(?:\\(.+?\\))?\\s*?\\w+\\s*\\*\\s*\\w+;",
 
 							// unique matches, available grobaly for every step from the step
@@ -97,7 +99,7 @@
 								"class" : "@interface (\\w+)\\s*:"
 							},
 
-							// If no "REPLACE" step will cause replacing all content by FIND result
+							// If no "REPLACE" and no "GET_ALL" key step will do nothing
 							// "REPLACE" : [
 							// 	"const export",
 							// 	"const",
