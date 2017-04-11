@@ -46,8 +46,9 @@ class RegexSequencerCommand(KKBasePluginCommand):
 				# set active window
 				print("active window",
 					sublime.active_window().id(),
-					sublime.active_window().active_view().name(),
-					sublime.active_window().active_view().file_name())
+					" active view: ", sublime.active_window().active_view(),
+					" name: ", sublime.active_window().active_view().name(),
+					" file name: ", sublime.active_window().active_view().file_name())
 
 				# Start logging
 				if self.debug:
@@ -196,7 +197,6 @@ class RegexSequencerCommand(KKBasePluginCommand):
 		if type(sequence) is str:
 			print("sequence/step/command:",sequence)
 			sequence = self.sequence_for_key(sequence)
-		print(sequence)
 
 		# sequence
 		if type(sequence) is list:
@@ -212,7 +212,7 @@ class RegexSequencerCommand(KKBasePluginCommand):
 
 	def run_step(self, edit, step):
 		if type(step) is str:
-			print("Step:",step)
+			# print("Step:",step)
 			step = self.sequence_for_key(step)
 
 		# increment step index	

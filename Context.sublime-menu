@@ -6,33 +6,30 @@
 		[
 			{
 				// !!!: Requires SublimeText Indent plugin by Alexey Nesterov
+				"id" : "regex_sequencer_get_xmls",
+				"caption" : "Get XML Strings",
+				"command" : "regex_sequencer",
+				"args" : {
+					"SEQUENCE" : [
+						{
+							"GET_ALL" : "<(?<tag>[^\\s]+).*\\k<tag>>\\s*$",
+							"COMMAND" : "indent_xml",
+						}
+					]
+				}
+			},
+			{
+				// !!!: Requires SublimeText Indent plugin by Alexey Nesterov
 				// indents XML one liners, usefull to make logs with xml much readable
 				"id" : "regex_sequencer_indent_xmls",
 				"caption" : "Indent XML Strings",
 				"command" : "regex_sequencer",
 				"args" : {
-					// "DEBUG" : true, // default value is false.
 					"SEQUENCE" : [
 						{
-							// Find all xml linex and selects them
-							"FIND_ALL" : "<(?<tag>[^\\s]*).*>.*?>+.*?\\s*\\k<tag>\\s*>",
-							// "GET_ALL" : "<.*>",
-
-							// perform command on selected regions
+							"FIND_ALL" : "<(?<tag>[^\\s]+).*\\k<tag>>\\s*$",
 							"COMMAND" : "indent_xml",
-
-							// Set to 'true' if you want use literal search.
-							// Default is 'false' (regex search).
-							// Affects whole step.
-							// To applay different setting for some parts
-							// of the step, split the step on two or more steps
 							"LITERAL" : false,
-
-							// Set to 'true' if you want case insensitive search.
-							// Default is 'false' (case sensitive search).
-							// Affects whole step.
-							// To applay different setting for some parts
-							// of the step, split the step on two or more steps
 							"IGNORECASE" : true,
 						}
 					]
