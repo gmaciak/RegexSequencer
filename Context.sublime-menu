@@ -5,6 +5,20 @@
 		"children":
 		[
 			{
+				"id" : "regex_sequencer_properties_init_with_json",
+				"caption" : "Create init code with json (objc)",
+				"command" : "regex_sequencer",
+				"args" : {
+					"SEQUENCE" : [
+						{
+							"GET_ALL" : "(\\w)(\\w+) = .*",
+							"FIND" : "(\\w)(\\w+) = .*",
+							"REPLACE" : "self\\.\\L$1\\E$2 = json[@\"$1$2\"];",
+						}
+					]
+				}
+			},
+			{
 				// !!!: Requires SublimeText Indent plugin by Alexey Nesterov
 				"id" : "regex_sequencer_get_xmls",
 				"caption" : "Get XML Strings",
